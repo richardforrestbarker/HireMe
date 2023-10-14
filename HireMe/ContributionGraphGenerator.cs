@@ -14,15 +14,19 @@ public class ContributionGraphGenerator
         _gitService = new GitCommitService();
     }
 
-    public async Task GenerateCommitsAsync()
+    public async Task GenerateCommitsAsync(int? targetYear = null)
     {
         // Get the pattern for "HIRE ME"
         var pattern = _patternProvider.GetHireMePattern();
 
         // Calculate dates where commits should be made
-        var targetDates = CalculateTargetDates(pattern);
+        var targetDates = CalculateTargetDates(pattern, targetYear);
 
         Console.WriteLine($"Pattern requires {targetDates.Count} dates with commits");
+        if (targetYear.HasValue)
+        {
+            Console.WriteLine($"Targeting year: {targetYear.Value}");
+        }
 
         // Get existing commit counts for these dates
         var existingCounts = await _gitService.GetCommitCountsForDatesAsync(targetDates);
@@ -46,22 +50,43 @@ public class ContributionGraphGenerator
         Console.WriteLine($"\nTotal commits created: {commitsCreated}");
     }
 
-    private List<DateTime> CalculateTargetDates(bool[,] pattern)
+    private List<DateTime> CalculateTargetDates(bool[,] pattern, int? targetYear = null)
     {
         var dates = new List<DateTime>();
-        var today = DateTime.UtcNow.Date;
+        DateTime startSunday;
 
-        // Find the most recent Sunday (GitHub week starts on Sunday)
-        var currentSunday = today;
-        while (currentSunday.DayOfWeek != DayOfWeek.Sunday)
+        if (targetYear.HasValue)
         {
-            currentSunday = currentSunday.AddDays(-1);
-        }
+            // For a specific year, start from the first Sunday of that year
+            var yearStart = new DateTime(targetYear.Value, 1, 1);
+            startSunday = yearStart;
 
-        // GitHub shows 52 weeks (364 days)
-        // We want to position the pattern in a visible area
-        // Start from 8 weeks ago so the pattern is clearly visible
-        var startSunday = currentSunday.AddDays(-7 * 44); // 44 weeks back from current Sunday
+            // Find the first Sunday of the year
+            while (startSunday.DayOfWeek != DayOfWeek.Sunday)
+            {
+                startSunday = startSunday.AddDays(1);
+            }
+
+            // Position the pattern to be visible - start a few weeks into the year
+            startSunday = startSunday.AddDays(7 * 4); // Start 4 weeks into the year
+        }
+        else
+        {
+            // Default behavior: use current date and position for rolling graph
+            var today = DateTime.UtcNow.Date;
+
+            // Find the most recent Sunday (GitHub week starts on Sunday)
+            var currentSunday = today;
+            while (currentSunday.DayOfWeek != DayOfWeek.Sunday)
+            {
+                currentSunday = currentSunday.AddDays(-1);
+            }
+
+            // GitHub shows 52 weeks (364 days)
+            // We want to position the pattern in a visible area
+            // Start from 44 weeks ago so the pattern is clearly visible
+            startSunday = currentSunday.AddDays(-7 * 44); // 44 weeks back from current Sunday
+        }
 
         int rows = pattern.GetLength(0); // 7 days
         int cols = pattern.GetLength(1); // width of pattern
