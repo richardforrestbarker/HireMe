@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="HireMe.Tests/HireMe.Tests.csproj" />
   <Project Path="HireMe/HireMe.csproj" />
 </Solution>
