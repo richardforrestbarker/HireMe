@@ -3,14 +3,15 @@ namespace HireMe;
 public class PatternProvider
 {
     // GitHub contribution graph has 7 rows (days of the week: Sun-Sat)
-    // Each letter will be 5 columns wide with 1 column spacing
+    // Each letter will be 5 columns wide with 1 column spacing between letters
+    // 3 column space between words
     // H I R E   M E
-    // 5+5+5+5+1+5+5 = 31 columns + 6 spaces = 37 columns total
+    // 5+5+5+5+3+5+5 = 33 columns + 6 letter spaces = 39 columns total
 
     public bool[,] GetHireMePattern()
     {
-        // 7 rows (days) x 37 columns (weeks)
-        var pattern = new bool[7, 37];
+        // 7 rows (days) x 39 columns (weeks)
+        var pattern = new bool[7, 39];
 
         // H (columns 0-4)
         DrawH(pattern, 0);
@@ -24,13 +25,13 @@ public class PatternProvider
         // E (columns 18-22)
         DrawE(pattern, 18);
 
-        // Space (column 23)
+        // 3 column space (columns 23, 24, 25)
 
-        // M (columns 24-28)
-        DrawM(pattern, 24);
+        // M (columns 26-30)
+        DrawM(pattern, 26);
 
-        // E (columns 30-34)
-        DrawE(pattern, 30);
+        // E (columns 32-36)
+        DrawE(pattern, 32);
 
         return pattern;
     }

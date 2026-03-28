@@ -84,8 +84,8 @@ public class ContributionGraphGenerator
 
     private int GetTargetCommitCount(DateTime date, bool[,] pattern)
     {
-        // For active cells in the pattern, we want at least 4 commits to make them dark green
-        // You can adjust this number based on desired intensity
-        return 4;
+        // For active cells in the pattern, we want many commits to ensure bright green
+        // GitHub shows brightest green at 10+ commits per day
+        return 15;
     }
 }

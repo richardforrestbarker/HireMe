@@ -15,7 +15,7 @@ public class PatternTests
 
         // Assert
         Assert.Equal(7, pattern.GetLength(0)); // 7 days (rows)
-        Assert.Equal(37, pattern.GetLength(1)); // 37 weeks (columns)
+        Assert.Equal(39, pattern.GetLength(1)); // 39 weeks (columns)
     }
 
     [Fact]
@@ -41,7 +41,7 @@ public class PatternTests
         }
 
         Assert.True(activePixels > 0, "Pattern should have active pixels");
-        Assert.True(activePixels < (7 * 37), "Pattern should not fill entire grid");
+        Assert.True(activePixels < (7 * 39), "Pattern should not fill entire grid");
     }
 
     [Fact]
@@ -146,10 +146,12 @@ public class PatternTests
         // Act
         var pattern = provider.GetHireMePattern();
 
-        // Assert - Column 23 should be empty (space between "HIRE" and "ME")
+        // Assert - Columns 23, 24, 25 should be empty (3-column space between "HIRE" and "ME")
         for (int row = 0; row < 7; row++)
         {
-            Assert.False(pattern[row, 23], $"Space column should be empty at row {row}");
+            Assert.False(pattern[row, 23], $"Space column 23 should be empty at row {row}");
+            Assert.False(pattern[row, 24], $"Space column 24 should be empty at row {row}");
+            Assert.False(pattern[row, 25], $"Space column 25 should be empty at row {row}");
         }
     }
 
@@ -193,23 +195,23 @@ public class PatternTests
         var pattern = provider.GetHireMePattern();
 
         // Assert - M should have two vertical bars with peaks at top
-        // M at columns 24-28
-        // Left vertical (column 24)
+        // M at columns 26-30
+        // Left vertical (column 26)
         for (int row = 0; row < 7; row++)
         {
-            Assert.True(pattern[row, 24], $"M left vertical should be active at row {row}");
+            Assert.True(pattern[row, 26], $"M left vertical should be active at row {row}");
         }
 
-        // Right vertical (column 28)
+        // Right vertical (column 30)
         for (int row = 0; row < 7; row++)
         {
-            Assert.True(pattern[row, 28], $"M right vertical should be active at row {row}");
+            Assert.True(pattern[row, 30], $"M right vertical should be active at row {row}");
         }
 
         // Peak diagonals
-        Assert.True(pattern[1, 25], "M left diagonal should be active");
-        Assert.True(pattern[1, 27], "M right diagonal should be active");
-        Assert.True(pattern[2, 26], "M center peak should be active");
+        Assert.True(pattern[1, 27], "M left diagonal should be active");
+        Assert.True(pattern[1, 29], "M right diagonal should be active");
+        Assert.True(pattern[2, 28], "M center peak should be active");
     }
 
     [Fact]
@@ -253,13 +255,13 @@ public class PatternTests
         var pattern = provider.GetHireMePattern();
 
         // Assert - Both E letters should have the same shape
-        // First E at columns 18-22, Second E at columns 30-34
+        // First E at columns 18-22, Second E at columns 32-36
         for (int row = 0; row < 7; row++)
         {
             for (int colOffset = 0; colOffset < 5; colOffset++)
             {
                 bool firstE = pattern[row, 18 + colOffset];
-                bool secondE = pattern[row, 30 + colOffset];
+                bool secondE = pattern[row, 32 + colOffset];
                 Assert.Equal(firstE, secondE);
             }
         }
@@ -274,8 +276,8 @@ public class PatternTests
         // Act
         var pattern = provider.GetHireMePattern();
 
-        // Assert - Verify spacing between letters (column 5, 11, 17, 23, 29)
-        int[] spacingColumns = { 5, 11, 17, 29 };
+        // Assert - Verify spacing between letters (column 5, 11, 17, 23-25, 31)
+        int[] spacingColumns = { 5, 11, 17, 31 };
 
         foreach (var col in spacingColumns)
         {
